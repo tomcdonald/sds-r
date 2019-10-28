@@ -1,0 +1,133 @@
+%  LatexEx1.tex - An introduction to LaTeX
+
+\documentclass[a4paper, 10pt]{article}
+
+\usepackage{amsmath} % Used for mathematical equations
+\usepackage{amssymb} % As above
+\usepackage{natbib} % Used for bibliography
+\usepackage{graphicx} % Used to include figures
+\usepackage{epstopdf} % Convert .eps files to .pdf
+\usepackage{geometry}
+\usepackage{natbib}
+\bibpunct[, ]{(}{)}{;}{a}{,}{,}
+
+\title{An Introduction to \LaTeX}
+\author{T.M. McDonald}
+\date{24th September 2019}
+
+\begin{document}
+\maketitle
+\section{Introduction \label{S:Intro}}
+This document is an introduction to the use of \LaTeX. We will show how to use \LaTeX\ to
+produce most things which would be needed in a short report. We will show how to produce
+tables, include figures and typeset some simple mathematics.
+
+\section{Typesetting \label{S:Typesetting}}
+
+\subsection{Changing Text Formats \label{S:Text Formats}}
+I had a bowl of \textbf{cereal} for breakfast and a \emph{sandwich} for lunch.
+
+\subsection{Creating Lists \label{S:Lists}}
+
+\subsubsection{Itemize \label{S:Itemize}}
+\begin{itemize}
+\item Baseball
+\item Basketball
+\item Cricket
+\end{itemize}
+
+\subsubsection{Enumerate \label{S:Enumerate}}
+For dinner last night, I had:
+\begin{enumerate}
+\item Pasta with Arrabiata Sauce
+\item Garlic Bread
+\end{enumerate}
+
+\section{Mathematics \label{S:Maths}}
+\begin{equation}
+a = (b+c)^d \label{E:NewEq}
+\end{equation}
+
+Add $a$ and $b$ to get $c$, or written more formally $a + b = c$.
+
+Add $a$ and $b$ to get $c$, or written more formally
+\begin{equation}
+a + b = c. \label{E:SimpleEx}
+\end{equation}
+
+
+\[
+\frac{\frac{1}{x}+\frac{1}{y}}{z}
+\] 
+
+\[
+x^a x^b= x^{a+b}
+\] 
+
+\begin{equation*}
+\int_{x^2 < 1}^{}
+f(x) dx
+\end{equation*}
+
+\[
+\forall \in \mathbf{R}:	x^2 \geq 0
+\]
+
+\begin{align*}
+f(x) & = (x-a)(x+a) \\
+& = x^2 - ax + ax - a^2 \\
+& = x^2 - a^2 \\
+\end{align*}
+
+\[
+\left(
+\begin{array}
+{c c}
+3 & 1 \\
+9 & 2 \\
+\end{array}
+\right)
+\]
+
+\section{Figures \label{S:Figures}}
+File was unavailable, more information regarding figures and editing captions etc. from R plot .pdfs is available in the LaTeX notes.
+
+\section{Tables \label{S:Tables}}
+\begin{table}
+\centering
+\begin{tabular}{|l||c|r|} \hline
+Name & Exam 1 & Exam 2 \\ \hline
+Bob Smith & 43 & 81 \\
+Anne Frank & 75 & 70 \\ \hline
+\end{tabular}
+7
+\caption{Exam Marks}
+\label{T:Exam Marks}
+\end{table}
+
+Exam marks 2 file was unavailable, come back to this later!
+
+\section{Labelling \label{S:Labelling}}
+We previously mentioned equation \ref{E:SimpleEx} in section \ref{S:Maths}
+
+\section{Citations \label{S:Citations}}
+\bibliographystyle{rmd}
+\bibliography{refdatabase}
+
+\section{Complex Tables \label{S:Complex Tables}}
+\begin{center}
+\begin{tabular}{l@{\hskip 0.5in}|crr@{.}l|}
+\multicolumn{1}{l}{Fell race} &  \multicolumn{3}{c}{Data}\\
+\cline{2-5}
+& dist & climb & \multicolumn{2}{c|}{time} \\
+\cline{2-5}
+Greenmantle & 2.5 & 650 & 16 & 083 \\
+Carnethy & 6.0 & 2500 & 48 & 350 \\
+Craig Dunain & 6.0 & 900 & 3 & 650 \\ \cline{2-5}
+\end{tabular}
+\end{center}
+
+\section{Placing Tables and Figures - Floats \label{S:Floats}}
+
+
+\end{document}

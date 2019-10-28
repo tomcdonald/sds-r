@@ -1,0 +1,9 @@
+\begin{thebibliography}{1}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[Baxevani et~al.(2005)Baxevani, Rychlik and Wilson]{Baxrychwil:2005}
+Baxevani, A., Rychlik, I. and Wilson, R. (2005). A new method for modelling the
+  space variability of significant wave height, {\em Extremes\/}, {\bf 8}:
+  267--294.
+
+\end{thebibliography}

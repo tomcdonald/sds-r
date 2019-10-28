@@ -1,0 +1,56 @@
+\documentclass[11pt]{article}
+
+
+% Include these two lines in your preamble
+\usepackage{natbib}
+\bibpunct[, ]{(}{)}{;}{a}{,}{,}
+
+% This just formats the BiBTeX logo
+\newcommand{\Bib}{B{\normalsize IB}\TeX}
+
+\parindent 0pt
+\begin{document}
+
+\textbf{\LARGE Citations using \Bib}
+
+\vspace{4mm}
+\section{Standard citations and citations in brackets}
+% A standard citation:
+The background is described in \cite{cramerleadbetter:1967}
+% Citations in brackets:
+\citep[for further details see][]{Baxrychwil:2005}.
+\citep[for even further details see][]{newbook:2019}
+
+\section{Citations referring to page numbers or chapters}
+% Citations referring to page numbers or chapters:
+The computational approach can be found in \citet[p 54]{geweke1}
+\citep[for implementation issues see][p 95]{Rlang:2005}.
+% the second producing a web address in the reference list.
+
+
+% Include these two lines at the place in your document
+% where the reference list should be
+\bibliographystyle{rmd}
+\bibliography{refdatabase}
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
