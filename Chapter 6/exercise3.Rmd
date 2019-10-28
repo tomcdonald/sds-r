@@ -1,0 +1,57 @@
+---
+title: "Ch.6, Exercise 3"
+author: "Tom McDonald"
+date: "28/10/2019"
+output: bookdown::html_document2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question
+
+Consider the random variables:
+
+* $Y \approx Ga(\alpha, \beta) \\$
+* $X|Y \approx exp(Y)$
+
+where $\alpha$ is the shape parameter and $\beta$ is the rate parameter. See [this Wiki page](https://en.wikipedia.org/wiki/Gamma_distribution) for the pdf of a random variable with a gamma probability distribution.
+
+* Suppose we want to calculate $Pr(X>2)$. We can do this by Monte Carlo integration (stats MSc and MMath students taking Computational Inference will see more of this next semester). MSc Data Analytics students should not worry about the details of this (but maths/stats students should). The trick is to write the probability as an expectation and replace the expectation with a sample mean.
+
+$$Pr(X>2) = \mathbb{E}(Z) \quad where \quad Z=1 \quad if \quad X>2 \quad and \quad Z=0 \\ otherwise, \quad Pr(X>2) \approx \frac{1}{n}\sum_{i=1}^n z_i$$
+where $z_1,z_2,...,z_n$ are $n$ IID realisations of $Z$.
+
+So we need to sample lots of $z_i$ realisations. To do this we first sample a realisation of $Y$, then, given this value of $Y$, we sample a realisation of $X$ from the conditional distribution $X|Y$. If this realisation of $X$ is more than 2 then $z_i = 1$, otherwise $z_i = 0$. We do this multiple times and record the proportion of $z_i$ values that are 1.
+
+* Write some code to implement this process for $\alpha=2$ and $\beta=3$.
+* By performing the integration directly it is possible to show that if $\alpha \in \mathbb{Z}^+$ then 
+$$Pr(X>2)=(\frac{\beta}{2+\beta})^\alpha$$
+Check your Monte Carlo estimate against the true value.
+
+```{r}
+alpha <- 2
+beta <- 3
+realisation <- function(){
+  y <- rgamma(1, shape = alpha, rate = beta)
+  x <- rexp(1, rate = y)
+  if (x > 2){
+    return(1)
+  }
+  else{
+    return(0)
+  }
+}
+
+monte_carlo <- replicate(10000, realisation())
+proportion <- length(monte_carlo[monte_carlo == 1]) / length(monte_carlo)
+cat('Proportion from MC simulation = ', proportion, '\n')
+
+true_value <- (beta / (2 + beta))^alpha
+cat('True value from integral = ', true_value, '\n')
+```
+
+
+
+
