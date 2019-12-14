@@ -1,0 +1,235 @@
+---
+title: "Further Programming Exercises"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Exercise A
+
+By thinking about the scoping rules, predict what the following code chunks will produce (ie will they run or produce an error message) before running the code to check it. Assume that the workspace is empty before each chunk of code is run.
+
+1. Error as threshold not specified in function call.
+
+```{r}
+remove_low_values <- function(x, threshold) x[-which(x < threshold)]
+#remove_low_values(x = rnorm(n = 100))
+```
+
+2. Will run.
+
+```{r}
+remove_low_values <- function(x, threshold) x[-which(x < threshold)]
+some_threshold <- 1
+remove_low_values(x = rnorm(n = 100), threshold = some_threshold)
+```
+
+3. Will run unil x is called, but this will error as x only exists within function scope.
+
+```{r}
+remove_low_values <- function(x, threshold) x[-which(x < threshold)]
+some_threshold <- 1
+remove_low_values(x = rnorm(n = 100), threshold = some_threshold)
+#x
+```
+
+4. Error as threshold argument not specified in function definition.
+
+```{r}
+remove_low_values <- function(x) x[-which(x < threshold)] # note the change in arguments
+#remove_low_values(x = rnorm(n = 100), threshold = 1)
+```
+
+### Exercises B
+
+#### 1.
+* The rules of a simplified game of blackjack are as follows:
+
+    + There is a dealer (assumed female) and one other player (assumed male)
+
+    + The dealer deals two cards to both herself and the player (neither player can see the value of the other person’s cards)
+
+    + For the player to win he must score higher than the dealer but no more than 21 (otherwise he goes bust and loses)
+
+    + All picture cards (jack, queen and king) are worth 10
+
+    + Aces are worth either 1 or 11, the person whose hand contains an ace can choose its value
+
+    + Scoring 21 in two cards (ace plus a card worth 10) is called blackjack and beats all other hands
+
+    + A hand of 5 cards is called a five-card trick and beats everything except black jack
+
+    + The player looks at his two cards and can choose to keep his hand as it is or ask the dealer to give him another card
+
+    + If he scores 22 or more he is bust. Whilst he has less than 21 he can choose to add another card.
+
+    + Once the player decides he wants no more cards the dealer then has her go - with the same rules applied as for the player
+
+    + If the dealer draws with the player the dealer wins
+
+Think about how to code playing this in an efficient way and write the pseudocode for it. You will need to chhose a suitable rule to decide whether the player (and dealer) choose another card or not. You could choose a simple rule, eg they don’t take another card if they have 16 or more, or something that assignns probabilities of picking another card that depend on their current score. The dealer and player could have different rules as well.
+
+```{r}
+# Create deck of cards
+# Deal two random cards to each player
+
+# for the player, then the dealer:
+#   if hand is blackjack:
+#     WIN
+#   while drawing:
+#     if (five card trick):
+#       WIN
+#     if (hand contains ace):
+#       sum1 <- sum of cards with ace as 1
+#       sum2 <- sum of card with ace as 11
+#       sum <- min(sum1, sum2)
+#     else:
+#       sum <- sum of cards
+#     if sum > 21:
+#       LOSE
+#     if sum > 16:
+#       drawing <- FALSE
+#     else:
+#       deal another card
+#   return sum
+
+# if outcome undecided and player sum > dealer sum:
+#   player wins
+# else:
+#   dealer wins
+```
+
+#### 2. 
+* Write some R code to play the game based on the above.
+
+```{r}
+# Initialise deck of cards, where 99 represents the ace
+deck <- c(2:10, 2:10, 2:10, 2:10, rep.int(10, 12), rep(99, times=4))
+
+# Function to deal two cards for without replacement, removing them from deck
+deal <- function(deck, name){
+  hand_idx <- sample(seq_along(deck), 2)
+  hand <- deck[hand_idx]
+  deck <- deck[-hand_idx]
+  return(list("deck" = deck, "hand" = hand))
+}
+
+# Deal cards to player and dealer
+player_deal <- deal(deck, 'Player')
+deck <- player_deal$deck
+player <- player_deal$hand
+dealer_deal <- deal(deck, 'Dealer')
+deck <- dealer_deal$deck
+dealer <- dealer_deal$hand
+
+winner <- "Undecided"
+player_drawing <- TRUE
+dealer_drawing <- TRUE
+five_card_trick_player <- FALSE
+five_card_trick_dealer <- FALSE
+
+# If blackjack, that player wins, otherwise, tie
+if (sum(player) == 109 && sum(dealer) != 109){
+  winner <- "Player wins!"
+  player_drawing <- FALSE
+  dealer_drawing <- FALSE
+}
+if (sum(dealer) == 109 && sum(player) != 109){
+  winner <- "Dealer wins!"
+  player_drawing <- FALSE
+  dealer_drawing <- FALSE
+}
+if (sum(dealer) == 109 && sum(player) == 109){
+  winner <- "Tie - both dealer and player pulled blackjack"
+  player_drawing <- FALSE
+  dealer_drawing <- FALSE
+}
+
+# Simulate firstly the player playing the game
+while (player_drawing == TRUE){ # Loop executes whilst cards still being drawn
+  if (99 %in% player){ # If ace present, calculate two possible sums
+    lower <- sum(replace(player, player==99, 1))
+    higher <- sum(replace(player, player==99, 11))
+    if (lower < 21 && higher < 21){ # If both sums < 21, take higher one
+      player_sum <- higher
+    }
+    else{
+      player_sum <- lower # Otherwise, take lower sum
+    }
+  }
+  else{
+    player_sum <- sum(player) # Calculate sum of hand
+  }
+  if (player_sum > 21){
+    winner <- "Dealer wins!" # If player bust, dealer wins
+    dealer_drawing <- FALSE
+    break
+  }
+  if (player_sum > 16){ # If player hand exceeds 16, stick
+    break
+  }
+  if (length(player) == 5){ # Check for five card trick
+    five_card_trick_player <- TRUE
+    break
+  }
+  # Otherwise, deal another card
+  new_card_idx <- sample(seq_along(deck), 1)
+  card <- deck[new_card_idx]
+  deck <- deck[-new_card_idx]
+  player <- c(player, card)
+}
+
+# Now simulate the dealer drawing cards
+while(dealer_drawing == TRUE){
+  if (99 %in% dealer){
+    lower <- sum(replace(dealer, dealer==99, 1))
+    higher <- sum(replace(dealer, dealer==99, 11))
+    if (lower < 21 && higher < 21){
+      dealer_sum <- higher
+    }
+    else{
+      dealer_sum <- lower
+    }
+  }
+  else{
+    dealer_sum <- sum(dealer)
+  }
+  if (dealer_sum > 21){
+    winner <- "Player wins!"
+    break
+  }
+  if (length(dealer) == 5){
+    five_card_trick_dealer <- TRUE
+    break
+  }
+  if (dealer_sum > player_sum && five_card_trick_player == FALSE){ 
+    winner <- "Dealer wins!" # If score exceeds player, dealer wins
+    break
+  }
+  new_card_idx <- sample(seq_along(deck), 1)
+  card <- deck[new_card_idx]
+  deck <- deck[-new_card_idx]
+  dealer <- c(dealer, card)
+}
+
+# Now check for final undecided cases
+if (winner == "Undecided"){
+  if (five_card_trick_player == TRUE && five_card_trick_dealer == FALSE){
+    winner <- "Player wins!"
+  }
+  if (five_card_trick_player == FALSE && five_card_trick_dealer == TRUE){
+    winner <- "Player wins!"
+  }
+  if (five_card_trick_player == TRUE && five_card_trick_dealer == TRUE){
+    winner <- "Tie - both players pulled 5 card trick"
+  }
+}
+
+# Print results
+cat("Player hand:", replace(player, player==99, "A"), "\n")
+cat("Dealer hand:", replace(dealer, dealer==99, "A"), "\n")
+cat("Outcome:", winner)
+```
+
